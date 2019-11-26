@@ -172,39 +172,47 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
+  Widget _buildIOSNavBar() {
+    return CupertinoNavigationBar(
+      middle: Text(
+        'Personal Expenses',
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: () => _startAddNewTransaction(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAndroidNavBar() {
+    return AppBar(
+      title: const Text(
+        'Personal Expenses',
+      ),
+      actions: <Widget>[
+        //memunculkan add icon pada appBar (IconADDButton)
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // membuat variable media query agar dapat di panggil di setiap tempat(hanya 1 rendering)
     final mediaQuery = MediaQuery.of(context);
     // membuat variable check oriantasi landscape or potrait
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text(
-              'Personal Expenses',
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(CupertinoIcons.add),
-                  onTap: () => _startAddNewTransaction(context),
-                ),
-              ],
-            ),
-          )
-        : AppBar(
-            title: Text(
-              'Personal Expenses',
-            ),
-            actions: <Widget>[
-              //memunculkan add icon pada appBar (IconADDButton)
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => _startAddNewTransaction(context),
-              ),
-            ],
-          );
+    // pengecekan widget untuk ios(Cupertino) / android
+    final PreferredSizeWidget appBar =
+        Platform.isIOS ? _buildIOSNavBar() : _buildAndroidNavBar();
     final txListWidget = Container(
       height: (mediaQuery.size.height - appBar.preferredSize.height) * 0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
